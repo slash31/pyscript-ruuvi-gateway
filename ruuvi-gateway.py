@@ -1,8 +1,8 @@
 #----------------------------------------------------------------------------
 # Author  : Aaron Finney
 # Created : September 14, 2021
-# Updated :
-# Version : 0.0.2
+# Updated : September 15, 2021
+# Version : 0.0.3
 # 
 # This script watches an MQTT topic for messages from a Ruuvi Gateway, decodes
 # them, performs basic processing (if configured), and re-emits them to MQTT
@@ -113,6 +113,7 @@ def mqtt_msg(topic=None, payload=None, payload_obj=None):
     mac = raw_mac.lower().replace(':','')
     if mac not in RUUVITAGS:
         # this sensor is not in the list of tags to process, ignore
+        log.warning(f"MAC addres {mac} not in RUUVITAGS, ignoring tag")
         return
     if payload_obj.get("data") is not None:
         try:
