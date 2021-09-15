@@ -2,7 +2,7 @@
 # Author  : Aaron Finney
 # Created : September 14, 2021
 # Updated :
-# Version : 0.0.1
+# Version : 0.0.2
 # 
 # This script watches an MQTT topic for messages from a Ruuvi Gateway, decodes
 # them, performs basic processing (if configured), and re-emits them to MQTT
@@ -17,26 +17,25 @@ import operator
 
 # Configuration variables
 MQTT_TOPIC_PREFIX = "ruuvi" # this must match what's configured in the Gateway MQTT settings
-TEMPERATURE_UNITS = "F" # C for Celsius or F for Fahrenheit
 DECIMAL_PLACES = 2 # number of decimal places for values
 BATTERY_RANGE = {"min":2500,"max":3000} # min/max battery range, used to calcuate battery level
 # RUUVITAGS defines the tags, by MAC address, that the script will process; any tag not included
 # in this dictionary will be ignored by the script. The value for each item is used as the string
 # to replace <TAG_NAME> in the emitted MQTT message payload
-RUUVITAGS = {"f33c5fc10393":"Living Room",
-            "dc757bb86337":"Middle Bedroom",
-            "f9fd6a322a01":"Front Bedroom",
-            "dc2c241a4b24":"Kitchen",
-            "ef336477a31a":"Back Bedroom"}
+RUUVITAGS = {"f33c5fc10393":"Living Room Ruuvitag",
+            "dc757bb86337":"Middle Bedroom Ruuvitag",
+            "f9fd6a322a01":"Front Bedroom Ruuvitag",
+            "dc2c241a4b24":"Kitchen Ruuvitag",
+            "ef336477a31a":"Back Bedroom Ruuvitag"}
 # MEASUREMENT CONFIG specifies which measurements to write back to MQTT, any transformations to be performed
 # on the values, and the config payload. The special values <MAC> and <TAG_NAME> are
 # replaced prior to emitting the config message to MQTT
 MEASUREMENT_CONFIG = {"temperature": 
                         {"config":
-                            {"stat_t":"homeassistant/sensor/<MAC>/temperature/state'",
+                            {"stat_t":"homeassistant/sensor/<MAC>/temperature/state",
                             "json_attr_t":"homeassistant/sensor/<MAC>/temperature/attributes",
                             "name":"<TAG_NAME> Temperature",
-                            "unit_of_meas":f"°{TEMPERATURE_UNITS}",
+                            "unit_of_meas":"\u00b0F",
                             "dev_cla":"temperature",
                             "uniq_id":"ruuvitag_<MAC>_temperature",
                             "device":
