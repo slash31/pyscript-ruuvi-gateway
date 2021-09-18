@@ -1,0 +1,69 @@
+pyscript:
+  apps: 
+    ruuvi-gateway:
+      mqtt_topic_prefix: ruuvi
+      decimal_places: 2
+      ruuvitags:
+        f33d5fc20393: Living Room Ruuvitag
+        ec757cb84337: Bedroom Ruuvitag
+        fc2c231a4b24: Kitchen Ruuvitag
+        e86561efa878: Garage Ruuvitag
+      measurements:
+        temperature:
+          config:
+            stat_t: homeassistant/sensor/<MAC>/temperature/state
+            json_attr_t: homeassistant/sensor/<MAC>/temperature/attributes
+            name: <TAG_NAME> Temperature
+            unit_of_meas: \u00b0F
+            dev_cla: temperature
+            uniq_id: ruuvitag_<MAC>_temperature
+            device:
+              ids: ruuvitag-<MAC>
+              mf: Ruuvi Innovations Ltd
+              mdl: RuuviTag
+              name: <TAG_NAME>
+          attributes:
+            Ruuvitag: <MAC>
+            Measure: Temperature
+            Unit: \u00b0F
+          transform: (<VALUE>*(9/5))+32
+          source_metric: temperature
+        humidity:
+          config:
+            stat_t: homeassistant/sensor/<MAC>/humidity/state
+            json_attr_t: homeassistant/sensor/<MAC>/humidity/attributes
+            name: <TAG_NAME> Humidity
+            unit_of_meas: '%'
+            dev_cla: humidity
+            uniq_id: ruuvitag_<MAC>_humidity
+            device:
+              ids: ruuvitag-<MAC>
+              mf: Ruuvi Innovations Ltd
+              mdl: RuuviTag
+              name: <TAG_NAME>
+          attributes:
+            Ruuvitag: <MAC>
+            Measure: Humidity
+            Unit: '%'
+          transform: None
+          source_metric: humidity
+        battery_level:
+          config:
+            stat_t: homeassistant/sensor/<MAC>/battery_level/state
+            json_attr_t: homeassistant/sensor/<MAC>/battery_level/attributes
+            name: <TAG_NAME> Battery Level
+            unit_of_meas: '%'
+            dev_cla: battery
+            uniq_id: ruuvitag_<MAC>_battery_level
+            device:
+              ids: ruuvitag-<MAC>
+              mf: Ruuvi Innovations Ltd
+              mdl: RuuviTag
+              name: <TAG_NAME>
+          attributes:
+            Ruuvitag: <MAC>
+            Measure: Battery Level
+            Unit: '%'
+          transform: ((<VALUE> - 2500) / (3000 - 2500)) * 100
+          source_metric: battery
+  

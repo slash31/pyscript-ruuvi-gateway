@@ -6,10 +6,10 @@ Python script for the pyscript addon in Home Assistant. It watches a MQTT topic 
 
 ### Configuring Home Assistant
 1. Install the [pyscript addon](https://hacs-pyscript.readthedocs.io/en/latest/)
-2. Copy ruuvi-gateway.py to /config/pyscript
+2. Copy ruuvi-gateway.py to /config/pyscript/apps
 3. Create the directory /config/pyscript/modules if it doesn't exist
 4. Download the [ruuvi_decoders Python module](https://github.com/ruuvi-friends/ruuvi-decoders), unpack it, and move the ruuvi_decoders folder into /config/pyscript/modules 
-5. Update the configuration variables at the top of the script to match your requirements/installation
+5. Add your application configuration to config/configuration.yaml (see the [configuration-sample.yaml](configuration-sample.yaml)) file for an example)
 6. Reload the pyscript addon
 
 ### Configuring the Ruuvi Gateway
@@ -22,6 +22,9 @@ Python script for the pyscript addon in Home Assistant. It watches a MQTT topic 
    * Client name - the client name used when connecting to the MQTT server (MAC address default is fine)
    * Topic prefix - the high-level topic prefix must match what's configured for MQTT_TOPIC_PREFIX in the script
 3. Once finished, power cycle the gateway to begin sending any received sensor beacons to MQTT
+
+### Configuring Home Assistant
+Note that you can use a rudimentary arithmetic expression to modify a metric value by including a "transform" element for the metric in the config file. This is best-effort; i.e. it works for the two simple use-cases I had (convert C to F, and calculate a sort-of battery level remaining percentage). I took the code directly from Stack Overflow, it's pretty much guaranteed to be fragile, YMMV, etc.. 
 
 ### Troubleshooting
 One utility that's extremely helpful if using the Mosquitto MQTT broker addon for Home Assistant is *mosquitto_sub* (installed by default with Mosquitto). 
