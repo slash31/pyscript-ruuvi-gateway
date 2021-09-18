@@ -7,10 +7,9 @@ Python script for the pyscript addon in Home Assistant. It watches a MQTT topic 
 ### Configuring Home Assistant
 1. Install the [pyscript addon](https://hacs-pyscript.readthedocs.io/en/latest/)
 2. Copy ruuvi-gateway.py to /config/pyscript/apps
-3. Create the directory /config/pyscript/modules if it doesn't exist
-4. Add ruuvi_decoders (the [ruuvi_decoders Python module](https://github.com/ruuvi-friends/ruuvi-decoders)) to requirements.txt in the /config/pyscript folder.
-5. Add your application configuration to config/configuration.yaml (see the [configuration-sample.yaml](configuration-sample.yaml)) file for an example)
-6. Reload the pyscript addon
+3. Add ruuvi_decoders (the [ruuvi_decoders Python module](https://github.com/ruuvi-friends/ruuvi-decoders)) to requirements.txt in the /config/pyscript folder.
+4. Add your application configuration to config/configuration.yaml (see the [configuration-sample.yaml](configuration-sample.yaml)) file for an example)
+5. Reload the pyscript addon
 
 ### Configuring the Ruuvi Gateway
 1. Select *Custom server* under Advanced when prompted to configure where to send Ruuv Tag data
