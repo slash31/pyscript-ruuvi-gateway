@@ -23,7 +23,7 @@ Python script for the pyscript addon in Home Assistant. It watches a MQTT topic 
    * Topic prefix - the high-level topic prefix must match what's configured for MQTT_TOPIC_PREFIX in the script
 3. Once finished, power cycle the gateway to begin sending any received sensor beacons to MQTT
 
-### Configuring Home Assistant
+### Basic Metric Transformations
 Note that you can use a rudimentary arithmetic expression to modify a metric value by including a "transform" element for the metric in the config file. This is best-effort; i.e. it works for the two simple use-cases I had (convert C to F, and calculate a sort-of battery level remaining percentage). I took the code directly from Stack Overflow, it's pretty much guaranteed to be fragile, YMMV, etc.. 
 
 ### Troubleshooting
