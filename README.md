@@ -1,6 +1,6 @@
 # pyscript-ruuvi-gateway
 
-Python script for the pyscript addon in Home Assistant. It watches a MQTT topic for messages from a [Ruuvi Gateway](https://ruuvi.com), decodes and processes them, and sends the data back to MQTT formatted for Home Assistant auto-discovery.
+Python script for the pyscript addon in Home Assistant that watches a MQTT topic for messages from a [Ruuvi Gateway](https://ruuvi.com), decodes and processes them, and sends the data back to MQTT formatted for Home Assistant auto-discovery.
 
 ## Installation and Use
 
@@ -22,11 +22,21 @@ Python script for the pyscript addon in Home Assistant. It watches a MQTT topic 
    * Topic prefix - the high-level topic prefix must match what's configured for MQTT_TOPIC_PREFIX in the script
 3. Once finished, power cycle the gateway to begin sending any received sensor beacons to MQTT
 
-### Basic Metric Transformations
-Note that you can use a rudimentary arithmetic expression to modify a metric value by including a "transform" element for the metric in the config file. This is best-effort; i.e. it works for the two simple use-cases I had (convert C to F, and calculate a sort-of battery level remaining percentage). I took the code directly from Stack Overflow, it's pretty much guaranteed to be fragile, YMMV, etc.. 
+### Measurements
+The measurements included in the the sample configuration YAML file are:
+- temperature (demonstrates custom unit and conversion to Fahrenheit using transform)
+- humidity
+- battery (demonstrates custom unit and calculation of percentage using transform)
+- pressure
+- tx_power
+
+I specifically did not add examples for the acceleration measurements, as there's no device class for acceleration in Home Assistant currently.
+
+#### Basic Metric Transformations
+You can use a rudimentary arithmetic expression to modify a metric value by setting the value of the "transform" key for the measurement in the config file. This is best-effort; i.e. it works for the two simple use-cases I had (convert C to F, and calculate a rough (read: wildly inaccurate) battery level remaining percentage. I took the code directly from [Stack Overflow](https://stackoverflow.com/questions/2371436/evaluating-a-mathematical-expression-in-a-string); it's pretty much guaranteed to be fragile. Standard caveats apply, YMMV, etc.. 
 
 ### Troubleshooting
-One utility that's extremely helpful if using the Mosquitto MQTT broker addon for Home Assistant is *mosquitto_sub* (installed by default with Mosquitto). 
+One tool that was extremely helpful for me during debugging (assuming you're using the Mosquitto MQTT broker addon for Home Assistant) is *mosquitto_sub* (installed by default with Mosquitto). 
 
 E.g. to view messages being sent from the gateway to the MQTT top-level topic "ruuvi", Open an SSH terminal to your Home Assistant instance and enter:
 ```
@@ -34,5 +44,12 @@ mosquitto_sub -h <MQTT_BROKER_IP> -u <MQTT_USERNAME> -P "<MQTT_PASSWORD>" -v -t 
 ```
 
 This will subscribe you to the topic and allow you to view messages as they come in to the broker. To check whether the messages are being correctly processed and submitted back to MQTT, replace "ruuvi" in the topic with "homeassist/sensor".
+
+You can also add logging commands such as
+```
+"log.info(f"message with variable {varname}")
+```
+
+to the Python script itself and view them in the core log. 
 
 

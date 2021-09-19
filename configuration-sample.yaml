@@ -14,7 +14,7 @@ pyscript:
             stat_t: homeassistant/sensor/<MAC>/temperature/state
             json_attr_t: homeassistant/sensor/<MAC>/temperature/attributes
             name: <TAG_NAME> Temperature
-            unit_of_meas: \u00b0F
+            unit_of_meas: "\u00b0F"
             dev_cla: temperature
             uniq_id: ruuvitag_<MAC>_temperature
             device:
@@ -25,7 +25,7 @@ pyscript:
           attributes:
             Ruuvitag: <MAC>
             Measure: Temperature
-            Unit: \u00b0F
+            Unit: "\u00b0F"
           transform: (<VALUE>*(9/5))+32
           source_metric: temperature
         humidity:
@@ -66,4 +66,42 @@ pyscript:
             Unit: '%'
           transform: ((<VALUE> - 2500) / (3000 - 2500)) * 100
           source_metric: battery
+        pressure:
+          config:
+            stat_t: homeassistant/sensor/<MAC>/pressure/state
+            json_attr_t: homeassistant/sensor/<MAC>/pressure/attributes
+            name: <TAG_NAME> Pressure
+            unit_of_meas: hPa
+            dev_cla: pressure
+            uniq_id: ruuvitag_<MAC>_pressure
+            device:
+              ids: ruuvitag-<MAC>
+              mf: Ruuvi Innovations Ltd
+              mdl: RuuviTag
+              name: <TAG_NAME>
+          attributes:
+            Ruuvitag: <MAC>
+            Measure: Pressure
+            Unit: hPa
+          transform: None
+          source_metric: pressure
+        tx_power:
+          config:
+            stat_t: homeassistant/sensor/<MAC>/tx_power/state
+            json_attr_t: homeassistant/sensor/<MAC>/tx_power/attributes
+            name: <TAG_NAME> Tx Power
+            unit_of_meas: dBm
+            dev_cla: signal_strength
+            uniq_id: ruuvitag_<MAC>_tx_power
+            device:
+              ids: ruuvitag-<MAC>
+              mf: Ruuvi Innovations Ltd
+              mdl: RuuviTag
+              name: <TAG_NAME>
+          attributes:
+            Ruuvitag: <MAC>
+            Measure: Tx Power
+            Unit: dBm
+          transform: None
+          source_metric: tx_power
   
