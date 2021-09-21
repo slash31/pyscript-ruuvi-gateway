@@ -2,7 +2,6 @@ pyscript:
   apps: 
     ruuvi-gateway:
       mqtt_topic_prefix: ruuvi
-      decimal_places: 2
       ruuvitags:
         f33d5fc20393: Living Room Ruuvitag
         ec757cb84337: Bedroom Ruuvitag
@@ -26,8 +25,10 @@ pyscript:
             Ruuvitag: <MAC>
             Measure: Temperature
             Unit: "\u00b0F"
-          transform: (<VALUE>*(9/5))+32
+          transform: 
+            expression: (<VALUE>*(9/5))+32
           source_metric: temperature
+          precision: 2
         humidity:
           config:
             stat_t: homeassistant/sensor/<MAC>/humidity/state
@@ -45,8 +46,8 @@ pyscript:
             Ruuvitag: <MAC>
             Measure: Humidity
             Unit: '%'
-          transform: None
           source_metric: humidity
+          precision: 2
         battery_level:
           config:
             stat_t: homeassistant/sensor/<MAC>/battery_level/state
@@ -64,8 +65,12 @@ pyscript:
             Ruuvitag: <MAC>
             Measure: Battery Level
             Unit: '%'
-          transform: ((<VALUE> - 2500) / (3000 - 2500)) * 100
+          transform: 
+            expression: ((<VALUE> - 2500) / (3000 - 2500)) * 100
+            min_val: 0
+            max_val: 100
           source_metric: battery
+          precision: 0
         pressure:
           config:
             stat_t: homeassistant/sensor/<MAC>/pressure/state
@@ -83,8 +88,8 @@ pyscript:
             Ruuvitag: <MAC>
             Measure: Pressure
             Unit: hPa
-          transform: None
           source_metric: pressure
+          precision: 2
         tx_power:
           config:
             stat_t: homeassistant/sensor/<MAC>/tx_power/state
@@ -102,6 +107,23 @@ pyscript:
             Ruuvitag: <MAC>
             Measure: Tx Power
             Unit: dBm
-          transform: None
           source_metric: tx_power
+        rssi:
+          config:
+            stat_t: homeassistant/sensor/<MAC>/rssi/state
+            json_attr_t: homeassistant/sensor/<MAC>/rssi/attributes
+            name: <TAG_NAME> RSSI
+            unit_of_meas: dBm
+            dev_cla: signal_strength
+            uniq_id: ruuvitag_<MAC>_rssi
+            device:
+              ids: ruuvitag-<MAC>
+              mf: Ruuvi Innovations Ltd
+              mdl: RuuviTag
+              name: <TAG_NAME>
+          attributes:
+            Ruuvitag: <MAC>
+            Measure: RSSI
+            Unit: dBm
+          source_metric: rssi
   

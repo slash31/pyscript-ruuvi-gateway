@@ -1,8 +1,8 @@
 #----------------------------------------------------------------------------
 # Author  : Aaron Finney
 # Created : September 14, 2021
-# Updated : September 18, 2021
-# Version : 0.1.0
+# Updated : September 21, 2021
+# Version : 0.1.2
 # 
 # This script watches an MQTT topic for messages from a Ruuvi Gateway, decodes
 # them, performs basic processing (if configured), and re-emits them to MQTT
@@ -43,7 +43,6 @@ def eval_(node):
 def mqtt_msg(topic=None, payload=None, payload_obj=None):
     ruuvitags = pyscript.app_config['ruuvitags']
     measurement_config = pyscript.app_config['measurements']
-    decimal_places = pyscript.app_config['decimal_places']
     # get the MAC from the topic because data format 3 doesn't include it
     raw_mac = topic.split('/')[-1]
     mac = raw_mac.lower().replace(':','')
@@ -65,13 +64,23 @@ def mqtt_msg(topic=None, payload=None, payload_obj=None):
             else:
                 decoder = Df5Decoder()
                 data = decoder.decode_data(clean_data)
+            # add rssi to the data structure
+            data['rssi'] = payload_obj.get("rssi")
 
             for m_type in measurement_config:
                 value = data.get(measurement_config[m_type]["source_metric"])
-                if measurement_config[m_type]["transform"] is not None:
-                    value = eval_(ast.parse(f"{measurement_config[m_type]['transform']}".replace("<VALUE>",str(value)), mode='eval').body)
+                if "transform" in measurement_config[m_type]:
+                    value = eval_(ast.parse(f"{measurement_config[m_type]['transform']['expression']}".replace("<VALUE>",str(value)), mode='eval').body)
+                    if "min_val" in measurement_config[m_type]['transform']:
+                        value = min(value, measurement_config[m_type]['transform']['max_val'])
+                    if "max_val" in measurement_config[m_type]['transform']:
+                        value = max(value, measurement_config[m_type]['transform']['min_val'])
+
                 if isinstance(value,float):
-                    value = round(value, decimal_places)
+                    if "precision" in measurement_config[m_type]:
+                        value = round(value, measurement_config[m_type]['precision'])
+                        if measurement_config[m_type]['precision'] == 0:
+                            value = int(value)
 
                 if not sensor_exists(mac):
                     config_topic = f"homeassistant/sensor/{mac}/{m_type}/config"
